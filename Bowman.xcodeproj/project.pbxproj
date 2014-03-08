@@ -10,6 +10,9 @@
 		C86C148218CA9A250086B7AC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C86C148118CA9A250086B7AC /* Foundation.framework */; };
 		C86C148518CA9A250086B7AC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C86C148418CA9A250086B7AC /* main.m */; };
 		C86C148918CA9A250086B7AC /* Bowman.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C86C148818CA9A250086B7AC /* Bowman.1 */; };
+		C86C149118CA9CDC0086B7AC /* BOWInterpreter.m in Sources */ = {isa = PBXBuildFile; fileRef = C86C149018CA9CDC0086B7AC /* BOWInterpreter.m */; };
+		C86C149418CAA3A50086B7AC /* BOWBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = C86C149318CAA3A50086B7AC /* BOWBrowser.m */; };
+		D41551E5DB8447F385576D92 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B7BA9C1A45241CAB7FD560C /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,11 +29,17 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3B7BA9C1A45241CAB7FD560C /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		49949002F257485391F79600 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		C86C147E18CA9A250086B7AC /* Bowman */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Bowman; sourceTree = BUILT_PRODUCTS_DIR; };
 		C86C148118CA9A250086B7AC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C86C148418CA9A250086B7AC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C86C148718CA9A250086B7AC /* Bowman-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bowman-Prefix.pch"; sourceTree = "<group>"; };
 		C86C148818CA9A250086B7AC /* Bowman.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Bowman.1; sourceTree = "<group>"; };
+		C86C148F18CA9CDC0086B7AC /* BOWInterpreter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BOWInterpreter.h; sourceTree = "<group>"; };
+		C86C149018CA9CDC0086B7AC /* BOWInterpreter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BOWInterpreter.m; sourceTree = "<group>"; };
+		C86C149218CAA3A50086B7AC /* BOWBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BOWBrowser.h; sourceTree = "<group>"; };
+		C86C149318CAA3A50086B7AC /* BOWBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BOWBrowser.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,6 +48,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C86C148218CA9A250086B7AC /* Foundation.framework in Frameworks */,
+				D41551E5DB8447F385576D92 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -51,6 +61,7 @@
 				C86C148318CA9A250086B7AC /* Bowman */,
 				C86C148018CA9A250086B7AC /* Frameworks */,
 				C86C147F18CA9A250086B7AC /* Products */,
+				49949002F257485391F79600 /* Pods.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -66,6 +77,7 @@
 			isa = PBXGroup;
 			children = (
 				C86C148118CA9A250086B7AC /* Foundation.framework */,
+				3B7BA9C1A45241CAB7FD560C /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -73,8 +85,12 @@
 		C86C148318CA9A250086B7AC /* Bowman */ = {
 			isa = PBXGroup;
 			children = (
-				C86C148418CA9A250086B7AC /* main.m */,
+				C86C149218CAA3A50086B7AC /* BOWBrowser.h */,
+				C86C149318CAA3A50086B7AC /* BOWBrowser.m */,
+				C86C148F18CA9CDC0086B7AC /* BOWInterpreter.h */,
+				C86C149018CA9CDC0086B7AC /* BOWInterpreter.m */,
 				C86C148818CA9A250086B7AC /* Bowman.1 */,
+				C86C148418CA9A250086B7AC /* main.m */,
 				C86C148618CA9A250086B7AC /* Supporting Files */,
 			);
 			path = Bowman;
@@ -95,9 +111,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C86C148C18CA9A250086B7AC /* Build configuration list for PBXNativeTarget "Bowman" */;
 			buildPhases = (
+				446C1819CCB544B2ABFA1018 /* Check Pods Manifest.lock */,
 				C86C147A18CA9A250086B7AC /* Sources */,
 				C86C147B18CA9A250086B7AC /* Frameworks */,
 				C86C147C18CA9A250086B7AC /* CopyFiles */,
+				4939586F340445A0BAA17604 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -134,12 +152,47 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		446C1819CCB544B2ABFA1018 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		4939586F340445A0BAA17604 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		C86C147A18CA9A250086B7AC /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				C86C148518CA9A250086B7AC /* main.m in Sources */,
+				C86C149118CA9CDC0086B7AC /* BOWInterpreter.m in Sources */,
+				C86C149418CAA3A50086B7AC /* BOWBrowser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,6 +269,7 @@
 		};
 		C86C148D18CA9A250086B7AC /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 49949002F257485391F79600 /* Pods.xcconfig */;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Bowman/Bowman-Prefix.pch";
@@ -225,6 +279,7 @@
 		};
 		C86C148E18CA9A250086B7AC /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 49949002F257485391F79600 /* Pods.xcconfig */;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Bowman/Bowman-Prefix.pch";
@@ -251,6 +306,7 @@
 				C86C148E18CA9A250086B7AC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

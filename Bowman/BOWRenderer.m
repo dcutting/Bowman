@@ -60,7 +60,8 @@ static NSUInteger IndentSize = 2;
                 [result addObject:[NSString stringWithFormat:@"    [%d] %@", (int)idx, link.href]];
             }];
         } else {
-            [result addObject:[NSString stringWithFormat:@"> %@: %@", rel, [links[0] href]]];
+            [result addObject:[NSString stringWithFormat:@"> %@", rel]];
+            [result addObject:[NSString stringWithFormat:@"    %@", [links[0] href]]];
         }
     }];
     return [result count] > 0 ? result : nil;

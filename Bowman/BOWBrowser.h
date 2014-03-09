@@ -4,7 +4,7 @@
 
 @interface BOWBrowser : NSObject
 
-- (NSString *)load:(NSURL *)url;
+- (NSString *)open:(NSURL *)url;
 - (NSString *)look;
 - (NSString *)go:(NSString *)rel;
 - (NSString *)back;

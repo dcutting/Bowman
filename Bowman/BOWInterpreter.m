@@ -31,7 +31,7 @@
 }
 
 - (void)showPrompt {
-    printf("> ");
+    printf("$ ");
 }
 
 - (NSString *)readLine {
@@ -51,6 +51,7 @@
     NSArray *arguments = [self extractArguments:words];
 
     NSString *result = [self interpretCommand:command arguments:arguments];
+    
     return result ? result : @"*** Error\n";
 }
 
@@ -73,7 +74,7 @@
 
 - (NSString *)interpretCommand:(NSString *)command arguments:(NSArray *)arguments {
     if ([command isEqualToString:@"open"] || [command isEqualToString:@"o"]) {
-        return [self load:arguments];
+        return [self open:arguments];
     } else if ([command isEqualToString:@"look"] || [command isEqualToString:@"l"]) {
         return [self look];
     } else if ([command isEqualToString:@"go"] || [command isEqualToString:@"g"]) {
@@ -84,10 +85,10 @@
     return nil;
 }
 
-- (NSString *)load:(NSArray *)arguments {
+- (NSString *)open:(NSArray *)arguments {
     NSString *urlStr = [arguments firstObject];
     NSURL *url = [NSURL URLWithString:urlStr];
-    return [self.browser load:url];
+    return [self.browser open:url];
 }
 
 - (NSString *)look {
@@ -104,7 +105,7 @@
 }
 
 - (void)showResult:(NSString *)result {
-    printf("%s", [result cStringUsingEncoding:NSUTF8StringEncoding]);
+    printf("\n%s\n", [result cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
 - (void)showNewline {

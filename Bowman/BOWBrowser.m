@@ -23,7 +23,7 @@
     return self;
 }
 
-- (NSString *)load:(NSURL *)url {
+- (NSString *)open:(NSURL *)url {
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:NULL error:NULL];
     if (!data) return nil;
@@ -46,7 +46,7 @@
 
 - (NSString *)go:(NSString *)rel {
     YBHALLink *link = [[self latestResource] linkForRelation:rel];
-    return [self load:link.URL];
+    return [self open:link.URL];
 }
 
 - (NSString *)back {

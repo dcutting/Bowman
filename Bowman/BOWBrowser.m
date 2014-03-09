@@ -44,8 +44,10 @@
     return [self.history count] > 0 ? [self.history lastObject] : nil;
 }
 
-- (NSString *)go:(NSString *)rel {
-    YBHALLink *link = [[self latestResource] linkForRelation:rel];
+- (NSString *)go:(NSString *)rel index:(NSUInteger)index {
+    NSArray *links = [[self latestResource] linksForRelation:rel];
+    if (index >= [links count]) return nil;
+    YBHALLink *link = links[index];
     return [self open:link.URL];
 }
 

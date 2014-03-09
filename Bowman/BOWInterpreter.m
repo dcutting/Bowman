@@ -97,7 +97,11 @@
 
 - (NSString *)go:(NSArray *)arguments {
     NSString *rel = [arguments firstObject];
-    return [self.browser go:rel];
+    NSUInteger index = 0;
+    if ([arguments count] > 1) {
+        index = [[arguments objectAtIndex:1] integerValue];
+    }
+    return [self.browser go:rel index:index];
 }
 
 - (NSString *)back {

@@ -12,6 +12,7 @@
 		C86C148918CA9A250086B7AC /* Bowman.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C86C148818CA9A250086B7AC /* Bowman.1 */; };
 		C86C149118CA9CDC0086B7AC /* BOWInterpreter.m in Sources */ = {isa = PBXBuildFile; fileRef = C86C149018CA9CDC0086B7AC /* BOWInterpreter.m */; };
 		C86C149418CAA3A50086B7AC /* BOWBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = C86C149318CAA3A50086B7AC /* BOWBrowser.m */; };
+		C8F1E84218CBF80F00D8D264 /* BOWRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = C8F1E84118CBF80F00D8D264 /* BOWRenderer.m */; };
 		D41551E5DB8447F385576D92 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B7BA9C1A45241CAB7FD560C /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -40,6 +41,8 @@
 		C86C149018CA9CDC0086B7AC /* BOWInterpreter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BOWInterpreter.m; sourceTree = "<group>"; };
 		C86C149218CAA3A50086B7AC /* BOWBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BOWBrowser.h; sourceTree = "<group>"; };
 		C86C149318CAA3A50086B7AC /* BOWBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BOWBrowser.m; sourceTree = "<group>"; };
+		C8F1E84018CBF80F00D8D264 /* BOWRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BOWRenderer.h; sourceTree = "<group>"; };
+		C8F1E84118CBF80F00D8D264 /* BOWRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BOWRenderer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +93,8 @@
 				C86C148F18CA9CDC0086B7AC /* BOWInterpreter.h */,
 				C86C149018CA9CDC0086B7AC /* BOWInterpreter.m */,
 				C86C148818CA9A250086B7AC /* Bowman.1 */,
+				C8F1E84018CBF80F00D8D264 /* BOWRenderer.h */,
+				C8F1E84118CBF80F00D8D264 /* BOWRenderer.m */,
 				C86C148418CA9A250086B7AC /* main.m */,
 				C86C148618CA9A250086B7AC /* Supporting Files */,
 			);
@@ -193,6 +198,7 @@
 				C86C148518CA9A250086B7AC /* main.m in Sources */,
 				C86C149118CA9CDC0086B7AC /* BOWInterpreter.m in Sources */,
 				C86C149418CAA3A50086B7AC /* BOWBrowser.m in Sources */,
+				C8F1E84218CBF80F00D8D264 /* BOWRenderer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

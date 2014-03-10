@@ -30,7 +30,7 @@
     id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
     if (![json isKindOfClass:[NSDictionary class]]) return nil;
     YBHALResource *resource = [[YBHALResource alloc] initWithDictionary:json baseURL:url];
-    [self.history addObject:resource];
+    [self pushResource:resource];
     return [self look];
 }
 
@@ -40,15 +40,27 @@
     return [self.renderer render:resource];
 }
 
+- (void)pushResource:(YBHALResource *)resource {
+    [self.history addObject:resource];
+}
+
 - (YBHALResource *)latestResource {
     return [self.history count] > 0 ? [self.history lastObject] : nil;
 }
 
 - (NSString *)go:(NSString *)rel index:(NSUInteger)index {
     NSArray *links = [[self latestResource] linksForRelation:rel];
-    if (index >= [links count]) return nil;
-    YBHALLink *link = links[index];
-    return [self open:link.URL];
+    if (links) {
+        if (index >= [links count]) return nil;
+        YBHALLink *link = links[index];
+        return [self open:link.URL];
+    } else {
+        NSArray *resources = [[self latestResource] resourcesForRelation:rel];
+        if (index >= [resources count]) return nil;
+        YBHALResource *resource = resources[index];
+        [self pushResource:resource];
+        return [self look];
+    }
 }
 
 - (NSString *)back {

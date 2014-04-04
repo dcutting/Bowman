@@ -12,6 +12,8 @@
 		C86C148918CA9A250086B7AC /* Bowman.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C86C148818CA9A250086B7AC /* Bowman.1 */; };
 		C86C149118CA9CDC0086B7AC /* BOWInterpreter.m in Sources */ = {isa = PBXBuildFile; fileRef = C86C149018CA9CDC0086B7AC /* BOWInterpreter.m */; };
 		C86C149418CAA3A50086B7AC /* BOWBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = C86C149318CAA3A50086B7AC /* BOWBrowser.m */; };
+		C8B085DE18EF79B800B687F6 /* libtermcap.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C8B085DD18EF79B800B687F6 /* libtermcap.dylib */; };
+		C8B085E018EF79C000B687F6 /* libreadline.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C8B085DF18EF79C000B687F6 /* libreadline.dylib */; };
 		C8F1E84218CBF80F00D8D264 /* BOWRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = C8F1E84118CBF80F00D8D264 /* BOWRenderer.m */; };
 		D41551E5DB8447F385576D92 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B7BA9C1A45241CAB7FD560C /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -41,6 +43,8 @@
 		C86C149018CA9CDC0086B7AC /* BOWInterpreter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BOWInterpreter.m; sourceTree = "<group>"; };
 		C86C149218CAA3A50086B7AC /* BOWBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BOWBrowser.h; sourceTree = "<group>"; };
 		C86C149318CAA3A50086B7AC /* BOWBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BOWBrowser.m; sourceTree = "<group>"; };
+		C8B085DD18EF79B800B687F6 /* libtermcap.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtermcap.dylib; path = usr/lib/libtermcap.dylib; sourceTree = SDKROOT; };
+		C8B085DF18EF79C000B687F6 /* libreadline.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libreadline.dylib; path = usr/lib/libreadline.dylib; sourceTree = SDKROOT; };
 		C8F1E84018CBF80F00D8D264 /* BOWRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BOWRenderer.h; sourceTree = "<group>"; };
 		C8F1E84118CBF80F00D8D264 /* BOWRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BOWRenderer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -50,6 +54,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C8B085E018EF79C000B687F6 /* libreadline.dylib in Frameworks */,
+				C8B085DE18EF79B800B687F6 /* libtermcap.dylib in Frameworks */,
 				C86C148218CA9A250086B7AC /* Foundation.framework in Frameworks */,
 				D41551E5DB8447F385576D92 /* libPods.a in Frameworks */,
 			);
@@ -63,8 +69,8 @@
 			children = (
 				C86C148318CA9A250086B7AC /* Bowman */,
 				C86C148018CA9A250086B7AC /* Frameworks */,
-				C86C147F18CA9A250086B7AC /* Products */,
 				49949002F257485391F79600 /* Pods.xcconfig */,
+				C86C147F18CA9A250086B7AC /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -79,6 +85,8 @@
 		C86C148018CA9A250086B7AC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C8B085DF18EF79C000B687F6 /* libreadline.dylib */,
+				C8B085DD18EF79B800B687F6 /* libtermcap.dylib */,
 				C86C148118CA9A250086B7AC /* Foundation.framework */,
 				3B7BA9C1A45241CAB7FD560C /* libPods.a */,
 			);
@@ -279,6 +287,10 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Bowman/Bowman-Prefix.pch";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -289,6 +301,10 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Bowman/Bowman-Prefix.pch";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

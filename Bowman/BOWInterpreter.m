@@ -1,7 +1,31 @@
 //  Copyright (c) 2014 Yellowbek. All rights reserved.
 
+#import <readline/readline.h>
+
 #import "BOWBrowser.h"
 #import "BOWInterpreter.h"
+
+static char *line_read = (char *)NULL;
+
+char *rl_gets() {
+    /* If the buffer has already been allocated, return the memory
+     to the free pool. */
+    if (line_read)
+    {
+        free (line_read);
+        line_read = (char *)NULL;
+    }
+    
+    /* Get a line from the user. */
+    line_read = readline ("$ ");
+    
+    /* If the line has any text in it, save it on the history. */
+    if (line_read && *line_read) {
+        add_history (line_read);
+    }
+    
+    return (line_read);
+}
 
 @interface BOWInterpreter ()
 
@@ -21,7 +45,6 @@
 
 - (void)start {
     while (YES) {
-        [self showPrompt];
         NSString *line = [self readLine];
         if (!line) break;
         NSString *result = [self interpretLine:line];
@@ -30,17 +53,11 @@
     [self showNewline];
 }
 
-- (void)showPrompt {
-    printf("$ ");
-}
-
 - (NSString *)readLine {
-    char buf[1000];
-    if (fgets(buf, sizeof buf, stdin)) {
-        *strchr(buf, '\n') = '\0';
-        return [NSString stringWithCString:buf encoding:NSUTF8StringEncoding];
-    }
-    return nil;
+    char *cLine = rl_gets();
+    if (!cLine) return nil;
+    NSString *line = [NSString stringWithCString:cLine encoding:NSUTF8StringEncoding];
+    return line;
 }
 
 - (NSString *)interpretLine:(NSString *)line {

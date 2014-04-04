@@ -1,0 +1,13 @@
+PODS:
+  - CSURITemplate (0.1.1)
+  - HyperBek (0.4.0):
+    - CSURITemplate (~> 0.1.1)
+
+DEPENDENCIES:
+  - HyperBek
+
+SPEC CHECKSUMS:
+  CSURITemplate: d3ec6da88799010195522e0c20e049a18da6a6aa
+  HyperBek: efd20b8674cffcd623b5bc2ace6f70cea56bba25
+
+COCOAPODS: 0.29.0

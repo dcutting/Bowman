@@ -24,7 +24,8 @@
 }
 
 - (NSString *)open:(NSURL *)url {
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setValue:@"application/hal+json" forHTTPHeaderField:@"Accept"];
     NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:NULL error:NULL];
     if (!data) return nil;
     id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
@@ -41,7 +42,9 @@
 }
 
 - (void)pushResource:(YBHALResource *)resource {
-    [self.history addObject:resource];
+    if (resource) {
+        [self.history addObject:resource];
+    }
 }
 
 - (YBHALResource *)latestResource {

@@ -89,7 +89,7 @@ char *rl_gets(NSString *prompt) {
 - (NSString *)interpretCommand:(NSString *)command arguments:(NSArray *)arguments {
     if ([command isEqualToString:@"look"] || [command isEqualToString:@"l"]) {
         return [self look];
-    } else if ([command isEqualToString:@"go"] || [command isEqualToString:@"g"]) {
+    } else if ([command isEqualToString:@"go"] || [command isEqualToString:@"get"] || [command isEqualToString:@"g"]) {
         return [self go:arguments];
     } else if ([command isEqualToString:@"back"] || [command isEqualToString:@"b"]) {
         return [self back];
@@ -103,11 +103,28 @@ char *rl_gets(NSString *prompt) {
 
 - (NSString *)go:(NSArray *)arguments {
     NSString *rel = [arguments firstObject];
+    NSUInteger argumentIndex = 1;
     NSUInteger index = 0;
-    if ([arguments count] > 1) {
-        index = [[arguments objectAtIndex:1] integerValue];
+    if ([arguments count] > argumentIndex) {
+        NSNumberFormatter *formatter = [NSNumberFormatter new];
+        [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        NSNumber *number = [formatter numberFromString:arguments[argumentIndex]];
+        if (number) {
+            index = [number integerValue];
+            argumentIndex++;
+        }
     }
-    return [self.browser go:rel index:index];
+    NSDictionary *variables;
+    if ([arguments count] > argumentIndex) {
+        variables = [self extractVariables:arguments[argumentIndex]];
+    }
+    return [self.browser go:rel index:index variables:variables];
+}
+
+- (NSDictionary *)extractVariables:(NSString *)argument {
+    NSData *data = [argument dataUsingEncoding:NSUTF8StringEncoding];
+    if (!data) return nil;
+    return [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
 }
 
 - (NSString *)back {

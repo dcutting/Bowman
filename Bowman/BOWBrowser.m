@@ -49,12 +49,14 @@
     return [self.history count] > 0 ? [self.history lastObject] : nil;
 }
 
-- (NSString *)go:(NSString *)rel index:(NSUInteger)index {
+- (NSString *)go:(NSString *)rel index:(NSUInteger)index variables:(NSDictionary *)variables {
     NSArray *links = [[self latestResource] linksForRelation:rel];
     if (links) {
         if (index >= [links count]) return nil;
         YBHALLink *link = links[index];
-        return [self open:link.URL];
+        if (!variables && link.isTemplated) return nil;
+        NSURL *url = [link URLWithVariables:variables];
+        return [self open:url];
     } else {
         NSArray *resources = [[self latestResource] resourcesForRelation:rel];
         if (index >= [resources count]) return nil;

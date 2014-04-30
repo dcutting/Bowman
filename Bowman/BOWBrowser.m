@@ -1,7 +1,5 @@
 //  Copyright (c) 2014 Yellowbek. All rights reserved.
 
-#import <HyperBek/HyperBek.h>
-
 #import "BOWBrowser.h"
 #import "BOWRenderer.h"
 
@@ -25,7 +23,7 @@
 
 - (NSString *)open:(NSURL *)url {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    [request setValue:@"application/hal+json" forHTTPHeaderField:@"Accept"];
+    [request setValue:@"application/hal+json, application/json" forHTTPHeaderField:@"Accept"];
     NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:NULL error:NULL];
     if (!data) return nil;
     id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];

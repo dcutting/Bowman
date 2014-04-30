@@ -34,7 +34,7 @@
 /* Begin PBXFileReference section */
 		3B7BA9C1A45241CAB7FD560C /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		49949002F257485391F79600 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
-		C86C147E18CA9A250086B7AC /* Bowman */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Bowman; sourceTree = BUILT_PRODUCTS_DIR; };
+		C86C147E18CA9A250086B7AC /* bowman */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = bowman; sourceTree = BUILT_PRODUCTS_DIR; };
 		C86C148118CA9A250086B7AC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C86C148418CA9A250086B7AC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C86C148718CA9A250086B7AC /* Bowman-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bowman-Prefix.pch"; sourceTree = "<group>"; };
@@ -77,7 +77,7 @@
 		C86C147F18CA9A250086B7AC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C86C147E18CA9A250086B7AC /* Bowman */,
+				C86C147E18CA9A250086B7AC /* bowman */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -136,7 +136,7 @@
 			);
 			name = Bowman;
 			productName = Bowman;
-			productReference = C86C147E18CA9A250086B7AC /* Bowman */;
+			productReference = C86C147E18CA9A250086B7AC /* bowman */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -291,7 +291,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = bowman;
 			};
 			name = Debug;
 		};
@@ -305,7 +305,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = bowman;
 			};
 			name = Release;
 		};

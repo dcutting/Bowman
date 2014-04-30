@@ -7,24 +7,16 @@
 
 static char *line_read = (char *)NULL;
 
-char *rl_gets() {
-    /* If the buffer has already been allocated, return the memory
-     to the free pool. */
-    if (line_read)
-    {
-        free (line_read);
+char *rl_gets(NSString *prompt) {
+    if (line_read) {
+        free(line_read);
         line_read = (char *)NULL;
     }
-    
-    /* Get a line from the user. */
-    line_read = readline ("$ ");
-    
-    /* If the line has any text in it, save it on the history. */
+    line_read = readline([prompt cStringUsingEncoding:NSUTF8StringEncoding]);
     if (line_read && *line_read) {
-        add_history (line_read);
+        add_history(line_read);
     }
-    
-    return (line_read);
+    return line_read;
 }
 
 @interface BOWInterpreter ()
@@ -35,10 +27,12 @@ char *rl_gets() {
 
 @implementation BOWInterpreter
 
-- (id)init {
+- (id)initWithURL:(NSURL *)url {
     self = [super init];
     if (self) {
         _browser = [BOWBrowser new];
+        [self.browser open:url];
+        [self showResult:[self look]];
     }
     return self;
 }
@@ -54,7 +48,10 @@ char *rl_gets() {
 }
 
 - (NSString *)readLine {
-    char *cLine = rl_gets();
+    NSString *url = [[self.browser latestResource].baseURL absoluteString];
+    if (!url) url = @"";
+    NSString *prompt = [NSString stringWithFormat:@"%@:$ ", url];
+    char *cLine = rl_gets(prompt);
     if (!cLine) return nil;
     NSString *line = [NSString stringWithCString:cLine encoding:NSUTF8StringEncoding];
     return line;
@@ -69,7 +66,7 @@ char *rl_gets() {
 
     NSString *result = [self interpretCommand:command arguments:arguments];
     
-    return result ? result : @"*** Error\n";
+    return result ? result : @"* Error\n";
 }
 
 - (NSArray *)extractWords:(NSString *)line {
@@ -90,9 +87,7 @@ char *rl_gets() {
 }
 
 - (NSString *)interpretCommand:(NSString *)command arguments:(NSArray *)arguments {
-    if ([command isEqualToString:@"open"] || [command isEqualToString:@"o"]) {
-        return [self open:arguments];
-    } else if ([command isEqualToString:@"look"] || [command isEqualToString:@"l"]) {
+    if ([command isEqualToString:@"look"] || [command isEqualToString:@"l"]) {
         return [self look];
     } else if ([command isEqualToString:@"go"] || [command isEqualToString:@"g"]) {
         return [self go:arguments];
@@ -100,12 +95,6 @@ char *rl_gets() {
         return [self back];
     }
     return nil;
-}
-
-- (NSString *)open:(NSArray *)arguments {
-    NSString *urlStr = [arguments firstObject];
-    NSURL *url = [NSURL URLWithString:urlStr];
-    return [self.browser open:url];
 }
 
 - (NSString *)look {
@@ -126,7 +115,7 @@ char *rl_gets() {
 }
 
 - (void)showResult:(NSString *)result {
-    printf("\n%s\n", [result cStringUsingEncoding:NSUTF8StringEncoding]);
+    printf("%s", [result cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
 - (void)showNewline {

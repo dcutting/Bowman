@@ -4,6 +4,7 @@
 
 @interface BOWInterpreter : NSObject
 
+- (id)initWithURL:(NSURL *)url;
 - (void)start;
 
 @end

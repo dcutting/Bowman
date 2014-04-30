@@ -9,35 +9,22 @@ static NSUInteger IndentSize = 2;
 - (NSString *)render:(YBHALResource *)resource {
     NSArray *result = [self render:resource depth:IndentSize];
     NSString *resourceStr = [result componentsJoinedByString:@"\n"];
-    return [NSString stringWithFormat:@"%@\n%@\n", [self indent:[resource.baseURL absoluteString] depth:IndentSize], resourceStr];
+    return [NSString stringWithFormat:@"%@\n", resourceStr];
 }
 
 - (NSArray *)render:(YBHALResource *)resource depth:(NSUInteger)depth {
     NSMutableArray *result = [NSMutableArray new];
     
     NSArray *renderedProperties = [self renderPropertiesForResource:resource];
-    if (renderedProperties) {
-        [result addObject:@""];
-        [result addObjectsFromArray:renderedProperties];
-    }
-    
+    [self addRendered:renderedProperties title:@"Properties" depth:depth result:result];
+
     NSArray *renderedLinks = [self renderLinksForResource:resource];
-    if (renderedLinks) {
-        [result addObject:@""];
-        [result addObjectsFromArray:renderedLinks];
-    }
-    
+    [self addRendered:renderedLinks title:@"Links" depth:depth result:result];
+
     NSArray *renderedEmbedded = [self renderEmbeddedForResource:resource];
-    if (renderedEmbedded) {
-        [result addObjectsFromArray:renderedEmbedded];
-    }
-    
-    NSMutableArray *indentedResult = [NSMutableArray new];
-    [result enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [indentedResult addObject:[self indent:obj depth:depth]];
-    }];
- 
-    return indentedResult;
+    [self addRendered:renderedEmbedded title:@"Embedded" depth:depth result:result];
+
+    return result;
 }
 
 - (NSArray *)renderPropertiesForResource:(YBHALResource *)resource {
@@ -54,14 +41,13 @@ static NSUInteger IndentSize = 2;
 - (NSArray *)renderLinksForResource:(YBHALResource *)resource {
     NSMutableArray *result = [NSMutableArray new];
     [resource.links enumerateKeysAndObjectsUsingBlock:^(NSString *rel, NSArray *links, BOOL *stop) {
+        [result addObject:[NSString stringWithFormat:@"%@", rel]];
         if ([links count] > 1) {
-            [result addObject:[NSString stringWithFormat:@"> %@", rel]];
             [links enumerateObjectsUsingBlock:^(YBHALLink *link, NSUInteger idx, BOOL *stop) {
-                [result addObject:[NSString stringWithFormat:@"    [%d] %@", (int)idx, link.href]];
+                [result addObject:[NSString stringWithFormat:@"  [%d] %@", (int)idx, link.href]];
             }];
         } else {
-            [result addObject:[NSString stringWithFormat:@"> %@", rel]];
-            [result addObject:[NSString stringWithFormat:@"    %@", [links[0] href]]];
+            [result addObject:[NSString stringWithFormat:@"  %@", [links[0] href]]];
         }
     }];
     return [result count] > 0 ? result : nil;
@@ -71,12 +57,20 @@ static NSUInteger IndentSize = 2;
     NSMutableArray *result = [NSMutableArray new];
     [resource.embedded enumerateKeysAndObjectsUsingBlock:^(NSString *rel, NSArray *embedded, BOOL *stop) {
         [embedded enumerateObjectsUsingBlock:^(YBHALResource *embeddedResource, NSUInteger idx, BOOL *stop) {
-            [result addObject:@""];
             [result addObject:[NSString stringWithFormat:@"+ %@ [%d]", rel, (int)idx]];
             [result addObjectsFromArray:[self render:embeddedResource depth:IndentSize]];
         }];
     }];
     return [result count] > 0 ? result : nil;
+}
+
+- (void)addRendered:(NSArray *)rendered title:(NSString *)title depth:(NSUInteger)depth result:(NSMutableArray *)result {
+    if (!rendered) return;
+    NSString *augmentedTitle = [NSString stringWithFormat:@"[%@]", title];
+    [result addObject:[self indent:augmentedTitle depth:depth]];
+    [rendered enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [result addObject:[self indent:obj depth:depth + IndentSize]];
+    }];
 }
 
 - (NSString *)indent:(NSString *)str depth:(NSUInteger)depth {

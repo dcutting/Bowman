@@ -31,8 +31,12 @@ char *rl_gets(NSString *prompt) {
     self = [super init];
     if (self) {
         _browser = [BOWBrowser new];
-        [self.browser open:url];
-        [self showResult:[self look]];
+        NSString *result = [self.browser open:url];
+        if (result) {
+            [self showResult:result];
+        } else {
+            return nil;
+        }
     }
     return self;
 }
@@ -42,7 +46,9 @@ char *rl_gets(NSString *prompt) {
         NSString *line = [self readLine];
         if (!line) break;
         NSString *result = [self interpretLine:line];
-        [self showResult:result];
+        if (result) {
+            [self showResult:result];
+        }
     }
     [self showNewline];
 }
@@ -54,6 +60,7 @@ char *rl_gets(NSString *prompt) {
     char *cLine = rl_gets(prompt);
     if (!cLine) return nil;
     NSString *line = [NSString stringWithCString:cLine encoding:NSUTF8StringEncoding];
+    line = [line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     return line;
 }
 
@@ -62,6 +69,7 @@ char *rl_gets(NSString *prompt) {
     if (!words) return nil;
 
     NSString *command = [self extractCommand:words];
+    if ([command isEqualToString:@""]) return nil;
     NSArray *arguments = [self extractArguments:words];
 
     NSString *result = [self interpretCommand:command arguments:arguments ];
@@ -70,7 +78,7 @@ char *rl_gets(NSString *prompt) {
 }
 
 - (NSArray *)extractWords:(NSString *)line {
-    NSArray *words = [line componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" "]];
+    NSArray *words = [line componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     return [words count] > 0 ? words : nil;
 }
 

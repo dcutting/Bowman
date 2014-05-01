@@ -14,7 +14,11 @@ int main(int argc, const char * argv[]) {
         NSString *arg = [NSString stringWithCString:cArg encoding:NSUTF8StringEncoding];
         NSURL *url = [NSURL URLWithString:arg];
         BOWInterpreter *interpreter = [[BOWInterpreter alloc] initWithURL:url];
-        [interpreter start];
+        if (interpreter) {
+            [interpreter start];
+        } else {
+            printf("* Error loading HAL web service\n");
+        }
     }
     return 0;
 }

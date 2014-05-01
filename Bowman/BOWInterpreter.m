@@ -104,7 +104,7 @@ char *rl_gets(NSString *prompt) {
 - (NSString *)go:(NSArray *)arguments {
     NSString *rel = [arguments firstObject];
     NSUInteger argumentIndex = 1;
-    NSUInteger index = 0;
+    NSUInteger index = NSNotFound;
     if ([arguments count] > argumentIndex) {
         NSNumberFormatter *formatter = [NSNumberFormatter new];
         [formatter setNumberStyle:NSNumberFormatterDecimalStyle];

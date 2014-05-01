@@ -52,6 +52,10 @@
 - (NSString *)go:(NSString *)rel index:(NSUInteger)index variables:(NSDictionary *)variables {
     NSArray *links = [[self latestResource] linksForRelation:rel];
     if (links) {
+        if (NSNotFound == index) {
+            if ([links count] > 1) return nil;
+            index = 0;
+        }
         if (index >= [links count]) return nil;
         YBHALLink *link = links[index];
         if (!variables && link.isTemplated) return nil;

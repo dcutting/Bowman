@@ -3,6 +3,10 @@
 #import "BOWRenderer.h"
 
 static NSUInteger IndentSize = 2;
+static NSString *ANSI_RED = @"\e[31m";
+static NSString *ANSI_BLUE = @"\e[34m";
+static NSString *ANSI_GRAY = @"\e[37m";
+static NSString *ANSI_RESET = @"\e[m";
 
 @implementation BOWRenderer
 
@@ -31,7 +35,9 @@ static NSUInteger IndentSize = 2;
     NSMutableArray *result = [NSMutableArray new];
     [resource.dictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         if (![key isEqualToString:@"_links"] && ![key isEqualToString:@"_embedded"]) {
-            NSString *propertyStr = [NSString stringWithFormat:@"%@: %@", key, obj];
+            NSString *colour = ANSI_GRAY;
+            NSString *endColour = ANSI_RESET;
+            NSString *propertyStr = [NSString stringWithFormat:@"%@%@:%@ %@", colour, key, endColour, obj];
             [result addObject:propertyStr];
         }
     }];
@@ -41,13 +47,16 @@ static NSUInteger IndentSize = 2;
 - (NSArray *)renderLinksForResource:(YBHALResource *)resource {
     NSMutableArray *result = [NSMutableArray new];
     [resource.links enumerateKeysAndObjectsUsingBlock:^(NSString *rel, NSArray *links, BOOL *stop) {
-        [result addObject:[NSString stringWithFormat:@"%@", rel]];
+        NSString *linkColour = ANSI_BLUE;
+        NSString *urlColour = ANSI_GRAY;
+        NSString *endColour = ANSI_RESET;
+        [result addObject:[NSString stringWithFormat:@"%@%@%@", linkColour, rel, endColour]];
         if ([links count] > 1) {
             [links enumerateObjectsUsingBlock:^(YBHALLink *link, NSUInteger idx, BOOL *stop) {
-                [result addObject:[NSString stringWithFormat:@"  [%d] %@", (int)idx, link.href]];
+                [result addObject:[NSString stringWithFormat:@"  %@[%d]%@ %@%@%@", linkColour, (int)idx, endColour, urlColour, link.href, endColour]];
             }];
         } else {
-            [result addObject:[NSString stringWithFormat:@"  %@", [links[0] href]]];
+            [result addObject:[NSString stringWithFormat:@"  %@%@%@", urlColour, [links[0] href], endColour]];
         }
     }];
     return [result count] > 0 ? result : nil;
@@ -66,7 +75,9 @@ static NSUInteger IndentSize = 2;
 
 - (void)addRendered:(NSArray *)rendered title:(NSString *)title depth:(NSUInteger)depth result:(NSMutableArray *)result {
     if (!rendered) return;
-    NSString *augmentedTitle = [NSString stringWithFormat:@"[%@]", title];
+    NSString *colour = ANSI_RED;
+    NSString *endColour = ANSI_RESET;
+    NSString *augmentedTitle = [NSString stringWithFormat:@"%@[%@]%@", colour, title, endColour];
     [result addObject:[self indent:augmentedTitle depth:depth]];
     [rendered enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         [result addObject:[self indent:obj depth:depth + IndentSize]];

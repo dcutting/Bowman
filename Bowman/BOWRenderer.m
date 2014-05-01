@@ -50,12 +50,13 @@ static NSString *ANSI_RESET = @"\e[m";
         NSString *linkColour = ANSI_BLUE;
         NSString *urlColour = ANSI_GRAY;
         NSString *endColour = ANSI_RESET;
-        [result addObject:[NSString stringWithFormat:@"%@%@%@", linkColour, rel, endColour]];
         if ([links count] > 1) {
             [links enumerateObjectsUsingBlock:^(YBHALLink *link, NSUInteger idx, BOOL *stop) {
-                [result addObject:[NSString stringWithFormat:@"  %@[%d]%@ %@%@%@", linkColour, (int)idx, endColour, urlColour, link.href, endColour]];
+                [result addObject:[NSString stringWithFormat:@"%@[%d] %@%@", linkColour, (int)idx, rel, endColour]];
+                [result addObject:[NSString stringWithFormat:@"  %@%@%@", urlColour, link.href, endColour]];
             }];
         } else {
+            [result addObject:[NSString stringWithFormat:@"%@%@%@", linkColour, rel, endColour]];
             [result addObject:[NSString stringWithFormat:@"  %@%@%@", urlColour, [links[0] href], endColour]];
         }
     }];
@@ -66,7 +67,9 @@ static NSString *ANSI_RESET = @"\e[m";
     NSMutableArray *result = [NSMutableArray new];
     [resource.embedded enumerateKeysAndObjectsUsingBlock:^(NSString *rel, NSArray *embedded, BOOL *stop) {
         [embedded enumerateObjectsUsingBlock:^(YBHALResource *embeddedResource, NSUInteger idx, BOOL *stop) {
-            [result addObject:[NSString stringWithFormat:@"+ %@ [%d]", rel, (int)idx]];
+            NSString *colour = ANSI_BLUE;
+            NSString *endColour = ANSI_RESET;
+            [result addObject:[NSString stringWithFormat:@"%@[%d] %@%@", colour, (int)idx, rel, endColour]];
             [result addObjectsFromArray:[self render:embeddedResource depth:IndentSize]];
         }];
     }];

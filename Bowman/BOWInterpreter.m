@@ -64,13 +64,13 @@ char *rl_gets(NSString *prompt) {
     NSString *command = [self extractCommand:words];
     NSArray *arguments = [self extractArguments:words];
 
-    NSString *result = [self interpretCommand:command arguments:arguments];
+    NSString *result = [self interpretCommand:command arguments:arguments ];
     
     return result ? result : @"* Error\n";
 }
 
 - (NSArray *)extractWords:(NSString *)line {
-    NSArray *words = [line componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    NSArray *words = [line componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" "]];
     return [words count] > 0 ? words : nil;
 }
 
@@ -116,7 +116,10 @@ char *rl_gets(NSString *prompt) {
     }
     NSDictionary *variables;
     if ([arguments count] > argumentIndex) {
-        variables = [self extractVariables:arguments[argumentIndex]];
+        NSMutableArray *remainderArguments = [arguments mutableCopy];
+        [remainderArguments removeObjectsInRange:NSMakeRange(0, argumentIndex)];
+        NSString *variableArgument = [remainderArguments componentsJoinedByString:@" "];
+        variables = [self extractVariables:variableArgument];
     }
     return [self.browser go:rel index:index variables:variables];
 }

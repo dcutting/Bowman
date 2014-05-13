@@ -9,6 +9,16 @@ static char *line_read = (char *)NULL;
 
 sigjmp_buf ctrlc_buf;
 
+BOWInterpreter *interpreter;
+
+@interface BOWInterpreter ()
+
+@property (nonatomic, strong) BOWBrowser *browser;
+
+- (NSArray *)relsForText:(NSString *)text;
+
+@end
+
 void handle_signal(int signo) {
     if (signo == SIGINT) {
         printf("^C\n");
@@ -75,6 +85,33 @@ char *command_generator(char *text, int state) {
     return ((char *)NULL);
 }
 
+char *rel_generator(char *text, int state) {
+    static int list_index;
+    static size_t len;
+
+    /* If this is a new word to complete, initialize now.  This includes
+     saving the length of TEXT for efficiency, and initializing the index
+     variable to 0. */
+    if (!state) {
+        list_index = 0;
+        len = strlen(text);
+    }
+
+    /* Return the next name which partially matches from the command list. */
+    NSString *textStr = [NSString stringWithCString:text encoding:NSUTF8StringEncoding];
+    NSArray *rels = [interpreter relsForText:textStr];
+
+    while (list_index < [rels count]) {
+        NSString *rel = rels[list_index];
+        list_index++;
+        char *relC = (char *)[rel cStringUsingEncoding:NSUTF8StringEncoding];
+        return dupstr(relC);
+    }
+
+    /* If no names matched, then return NULL. */
+    return ((char *)NULL);
+}
+
 char **bowman_completion(char *text, int start, int end) {
     char **matches = (char **)NULL;
 
@@ -83,6 +120,8 @@ char **bowman_completion(char *text, int start, int end) {
      directory. */
     if (start == 0) {
         matches = completion_matches(text, (CPFunction *)command_generator);
+    } else {
+        matches = completion_matches(text, (CPFunction *)rel_generator);
     }
     return matches;
 }
@@ -91,13 +130,25 @@ char **empty_completion(char *text, int start, int end) {
     return NULL;
 }
 
-@interface BOWInterpreter ()
-
-@property (nonatomic, strong) BOWBrowser *browser;
-
-@end
-
 @implementation BOWInterpreter
+
+- (NSArray *)relsForText:(NSString *)text {
+    NSMutableArray *rels = [NSMutableArray new];
+    NSDictionary *links = self.browser.latestResource.links;
+    [self addRelsTo:rels text:text links:links];
+    NSDictionary *embedded = self.browser.latestResource.embedded;
+    [self addRelsTo:rels text:text links:embedded];
+    return rels;
+}
+
+- (void)addRelsTo:(NSMutableArray *)rels text:(NSString *)text links:(NSDictionary *)links {
+    [links enumerateKeysAndObjectsUsingBlock:^(NSString *key, id obj, BOOL *stop) {
+        NSRange range = [key rangeOfString:text];
+        if ([text isEqualToString:@""] || NSNotFound != range.location) {
+            [rels addObject:key];
+        }
+    }];
+}
 
 - (id)initWithURL:(NSURL *)url {
     self = [super init];
@@ -113,6 +164,7 @@ char **empty_completion(char *text, int start, int end) {
     signal(SIGINT, handle_signal);
     rl_attempted_completion_function = (CPPFunction *)bowman_completion;
     rl_completion_entry_function = (Function *)empty_completion;
+    interpreter = self;
     return self;
 }
 

@@ -7,6 +7,7 @@
 
 @property (nonatomic, strong) NSMutableArray *history;
 @property (nonatomic, strong) BOWRenderer *renderer;
+@property (nonatomic, strong) NSMutableDictionary *headers;
 
 @end
 
@@ -17,6 +18,7 @@
     if (self) {
         _history = [NSMutableArray new];
         _renderer = [BOWRenderer new];
+        _headers = [NSMutableDictionary new];
     }
     return self;
 }
@@ -28,6 +30,9 @@
 - (NSString *)open:(NSURL *)url body:(NSString *)body {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setValue:@"application/hal+json" forHTTPHeaderField:@"Accept"];
+    [self.headers enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        [request setValue:obj forHTTPHeaderField:key];
+    }];
     if (body) {
         NSData *bodyData = [body dataUsingEncoding:NSUTF8StringEncoding];
         [request setHTTPBody:bodyData];
@@ -82,6 +87,19 @@
 - (NSString *)post:(NSString *)rel body:(NSString *)body {
     YBHALLink *link = [[self latestResource] linkForRelation:rel];
     return [self open:link.URL body:body];
+}
+
+- (NSString *)setHeader:(NSString *)name value:(NSString *)value {
+    if (value) {
+        [self.headers setObject:value forKey:name];
+    } else {
+        [self.headers removeObjectForKey:name];
+    }
+    return [self showHeaders];
+}
+
+- (NSString *)showHeaders {
+    return [NSString stringWithFormat:@"%@\n", [self.headers description]];
 }
 
 - (NSString *)back {

@@ -28,6 +28,69 @@ char *rl_gets(NSString *prompt) {
     return line_read;
 }
 
+typedef struct {
+    char *name;			/* User printable name of the function. */
+    char *doc;			/* Documentation for this function.  */
+} COMMAND;
+
+COMMAND commands[] = {
+    { "look", "Display the current resource" },
+    { "go", "Follow a link relation" },
+    { "post", "POST to a link relation" },
+    { "back", "Go back" },
+    { "set", "Set a header to be used in subsequent requests" },
+    { "help", "Display help" },
+    { (char *)NULL, (char *)NULL }
+};
+
+char *dupstr(char *s) {
+    char *r;
+    r = malloc(strlen(s) + 1);
+    strcpy(r, s);
+    return r;
+}
+
+char *command_generator(char *text, int state) {
+    static int list_index;
+    static size_t len;
+    char *name;
+
+    /* If this is a new word to complete, initialize now.  This includes
+     saving the length of TEXT for efficiency, and initializing the index
+     variable to 0. */
+    if (!state) {
+        list_index = 0;
+        len = strlen(text);
+    }
+
+    /* Return the next name which partially matches from the command list. */
+    while ((name = commands[list_index].name)) {
+        list_index++;
+        if (strncmp(name, text, len) == 0) {
+            return dupstr(name);
+        }
+    }
+
+    /* If no names matched, then return NULL. */
+    return ((char *)NULL);
+}
+
+char **bowman_completion(char *text, int start, int end) {
+    char **matches = (char **)NULL;
+
+    /* If this word is at the start of the line, then it is a command
+     to complete.  Otherwise it is the name of a file in the current
+     directory. */
+    if (start == 0) {
+        matches = completion_matches(text, (CPFunction *)command_generator);
+    }
+    return matches;
+}
+
+char **empty_completion(char *text, int start, int end) {
+    return NULL;
+}
+
 @interface BOWInterpreter ()
 
 @property (nonatomic, strong) BOWBrowser *browser;
@@ -48,6 +111,8 @@ char *rl_gets(NSString *prompt) {
         }
     }
     signal(SIGINT, handle_signal);
+    rl_attempted_completion_function = (CPPFunction *)bowman_completion;
+    rl_completion_entry_function = (Function *)empty_completion;
     return self;
 }
 
@@ -106,23 +171,22 @@ char *rl_gets(NSString *prompt) {
 }
 
 - (NSString *)interpretCommand:(NSString *)command arguments:(NSArray *)arguments {
-    if ([command isEqualToString:@"look"] || [command isEqualToString:@"l"]) {
-        return [self look];
-    } else if ([command isEqualToString:@"go"] || [command isEqualToString:@"get"] || [command isEqualToString:@"g"]) {
-        return [self go:arguments];
-    } else if ([command isEqualToString:@"back"] || [command isEqualToString:@"b"]) {
-        return [self back];
-    } else if ([command isEqualToString:@"post"] || [command isEqualToString:@"p"]) {
-        return [self post:arguments];
+    NSString *methodName = [NSString stringWithFormat:@"command_%@:", command];
+    SEL selector = NSSelectorFromString(methodName);
+    if ([self respondsToSelector:selector]) {
+        IMP imp = [self methodForSelector:selector];
+        NSString *(*func)(id, SEL, NSArray *) = (void *)imp;
+        NSString *result = func(self, selector, arguments);
+        return result;
     }
     return nil;
 }
 
-- (NSString *)look {
+- (NSString *)command_look:(NSArray *)arguments {
     return [self.browser look];
 }
 
-- (NSString *)go:(NSArray *)arguments {
+- (NSString *)command_go:(NSArray *)arguments {
     NSString *rel = [arguments firstObject];
     NSUInteger argumentIndex = 1;
     NSUInteger index = NSNotFound;
@@ -151,15 +215,40 @@ char *rl_gets(NSString *prompt) {
     return [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
 }
 
-- (NSString *)post:(NSArray *)arguments {
+- (NSString *)command_post:(NSArray *)arguments {
     NSString *rel = [arguments firstObject];
     if ([arguments count] <= 1) return nil;
     NSString *body = [arguments objectAtIndex:1];
     return [self.browser post:rel body:body];
 }
 
-- (NSString *)back {
+- (NSString *)command_set:(NSArray *)arguments {
+    if ([arguments count] < 1) {
+        return [self.browser showHeaders];
+    }
+    NSString *headerName = [arguments objectAtIndex:0];
+    NSString *headerValue;
+    if ([arguments count] > 1) {
+        NSMutableArray *remainderArguments = [arguments mutableCopy];
+        [remainderArguments removeObjectAtIndex:0];
+        headerValue = [remainderArguments componentsJoinedByString:@" "];
+    }
+    return [self.browser setHeader:headerName value:headerValue];
+}
+
+- (NSString *)command_back:(NSArray *)arguments {
     return [self.browser back];
+}
+
+- (NSString *)command_help:(NSArray *)arguments {
+    NSMutableString *help = [NSMutableString new];
+    for (NSInteger i = 0; i < sizeof(commands)/sizeof(COMMAND); i++) {
+        COMMAND command = commands[i];
+        if (command.name) {
+            [help appendFormat:@"%s: %s\n", command.name, command.doc];
+        }
+    }
+    return help;
 }
 
 - (void)showResult:(NSString *)result {

@@ -7,6 +7,15 @@
 
 static char *line_read = (char *)NULL;
 
+sigjmp_buf ctrlc_buf;
+
+void handle_signal(int signo) {
+    if (signo == SIGINT) {
+        printf("^C\n");
+        siglongjmp(ctrlc_buf, 1);
+    }
+}
+
 char *rl_gets(NSString *prompt) {
     if (line_read) {
         free(line_read);
@@ -38,10 +47,12 @@ char *rl_gets(NSString *prompt) {
             return nil;
         }
     }
+    signal(SIGINT, handle_signal);
     return self;
 }
 
 - (void)start {
+    while (sigsetjmp(ctrlc_buf, 1) != 0);
     while (YES) {
         NSString *line = [self readLine];
         if (!line) break;
@@ -101,6 +112,8 @@ char *rl_gets(NSString *prompt) {
         return [self go:arguments];
     } else if ([command isEqualToString:@"back"] || [command isEqualToString:@"b"]) {
         return [self back];
+    } else if ([command isEqualToString:@"post"] || [command isEqualToString:@"p"]) {
+        return [self post:arguments];
     }
     return nil;
 }
@@ -136,6 +149,13 @@ char *rl_gets(NSString *prompt) {
     NSData *data = [argument dataUsingEncoding:NSUTF8StringEncoding];
     if (!data) return nil;
     return [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+}
+
+- (NSString *)post:(NSArray *)arguments {
+    NSString *rel = [arguments firstObject];
+    if ([arguments count] <= 1) return nil;
+    NSString *body = [arguments objectAtIndex:1];
+    return [self.browser post:rel body:body];
 }
 
 - (NSString *)back {

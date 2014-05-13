@@ -22,8 +22,17 @@
 }
 
 - (NSString *)open:(NSURL *)url {
+    return [self open:url body:nil];
+}
+
+- (NSString *)open:(NSURL *)url body:(NSString *)body {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    [request setValue:@"application/hal+json, application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:@"application/hal+json" forHTTPHeaderField:@"Accept"];
+    if (body) {
+        NSData *bodyData = [body dataUsingEncoding:NSUTF8StringEncoding];
+        [request setHTTPBody:bodyData];
+        [request setHTTPMethod:@"POST"];
+    }
     NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:NULL error:NULL];
     if (!data) return nil;
     id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
@@ -68,6 +77,11 @@
         [self pushResource:resource];
         return [self look];
     }
+}
+
+- (NSString *)post:(NSString *)rel body:(NSString *)body {
+    YBHALLink *link = [[self latestResource] linkForRelation:rel];
+    return [self open:link.URL body:body];
 }
 
 - (NSString *)back {

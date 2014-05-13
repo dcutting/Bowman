@@ -9,6 +9,7 @@
 - (NSString *)open:(NSURL *)url;
 - (NSString *)look;
 - (NSString *)go:(NSString *)rel index:(NSUInteger)index variables:(NSDictionary *)variables;
+- (NSString *)post:(NSString *)rel body:(NSString *)body;
 - (NSString *)back;
 
 - (YBHALResource *)latestResource;

@@ -66,12 +66,18 @@ static NSString *ANSI_RESET = @"\e[m";
 - (NSArray *)renderEmbeddedForResource:(YBHALResource *)resource {
     NSMutableArray *result = [NSMutableArray new];
     [resource.embedded enumerateKeysAndObjectsUsingBlock:^(NSString *rel, NSArray *embedded, BOOL *stop) {
-        [embedded enumerateObjectsUsingBlock:^(YBHALResource *embeddedResource, NSUInteger idx, BOOL *stop) {
-            NSString *colour = ANSI_BLUE;
-            NSString *endColour = ANSI_RESET;
-            [result addObject:[NSString stringWithFormat:@"%@[%d] %@%@", colour, (int)idx, rel, endColour]];
+        NSString *colour = ANSI_BLUE;
+        NSString *endColour = ANSI_RESET;
+        if ([embedded count] > 1) {
+            [embedded enumerateObjectsUsingBlock:^(YBHALResource *embeddedResource, NSUInteger idx, BOOL *stop) {
+                [result addObject:[NSString stringWithFormat:@"%@[%d] %@%@", colour, (int)idx, rel, endColour]];
+                [result addObjectsFromArray:[self render:embeddedResource depth:IndentSize]];
+            }];
+        } else {
+            id embeddedResource = [embedded firstObject];
+            [result addObject:[NSString stringWithFormat:@"%@%@%@", colour, rel, endColour]];
             [result addObjectsFromArray:[self render:embeddedResource depth:IndentSize]];
-        }];
+        }
     }];
     return [result count] > 0 ? result : nil;
 }

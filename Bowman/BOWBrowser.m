@@ -77,6 +77,10 @@
         return [self open:url];
     } else {
         NSArray *resources = [[self latestResource] resourcesForRelation:rel];
+        if (NSNotFound == index) {
+            if ([resources count] > 1) return nil;
+            index = 0;
+        }
         if (index >= [resources count]) return nil;
         YBHALResource *resource = resources[index];
         [self pushResource:resource];

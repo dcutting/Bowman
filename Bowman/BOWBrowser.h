@@ -10,6 +10,7 @@
 - (NSString *)look;
 - (NSString *)go:(NSString *)rel index:(NSUInteger)index variables:(NSDictionary *)variables;
 - (NSString *)post:(NSString *)rel body:(NSString *)body;
+- (NSString *)delete:(NSString *)rel;
 - (NSString *)setHeader:(NSString *)name value:(NSString *)value;
 - (NSString *)showHeaders;
 - (NSString *)back;

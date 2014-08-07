@@ -28,23 +28,38 @@
 }
 
 - (NSString *)open:(NSURL *)url body:(NSString *)body {
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    [request setValue:@"application/hal+json" forHTTPHeaderField:@"Accept"];
-    [self.headers enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        [request setValue:obj forHTTPHeaderField:key];
-    }];
+    NSMutableURLRequest *request = [self configureRequestForURL:url];
     if (body) {
         NSData *bodyData = [body dataUsingEncoding:NSUTF8StringEncoding];
         [request setHTTPBody:bodyData];
         [request setHTTPMethod:@"POST"];
     }
+    return [self performRequest:request];
+}
+
+- (NSMutableURLRequest *)configureRequestForURL:(NSURL *)url {
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setValue:@"application/hal+json" forHTTPHeaderField:@"Accept"];
+    [self.headers enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        [request setValue:obj forHTTPHeaderField:key];
+    }];
+    return request;
+}
+
+- (NSString *)performRequest:(NSMutableURLRequest *)request {
     NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:NULL error:NULL];
     if (!data) return nil;
     id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
     if (![json isKindOfClass:[NSDictionary class]]) return nil;
-    YBHALResource *resource = [[YBHALResource alloc] initWithDictionary:json baseURL:url];
+    YBHALResource *resource = [[YBHALResource alloc] initWithDictionary:json baseURL:request.URL];
     [self pushResource:resource];
     return [self look];
+}
+
+- (NSString *)deleteURL:(NSURL *)url {
+    NSMutableURLRequest *request = [self configureRequestForURL:url];
+    [request setHTTPMethod:@"DELETE"];
+    return [self performRequest:request];
 }
 
 - (NSString *)look {
@@ -91,6 +106,11 @@
 - (NSString *)post:(NSString *)rel body:(NSString *)body {
     YBHALLink *link = [[self latestResource] linkForRelation:rel];
     return [self open:link.URL body:body];
+}
+
+- (NSString *)delete:(NSString *)rel {
+    YBHALLink *link = [[self latestResource] linkForRelation:rel];
+    return [self deleteURL:link.URL];
 }
 
 - (NSString *)setHeader:(NSString *)name value:(NSString *)value {

@@ -48,6 +48,7 @@ COMMAND commands[] = {
     { "get", "Follow a link relation" },
     { "go", "Synonym for get" },
     { "post", "POST to a link relation" },
+    { "delete", "DELETE a link relation" },
     { "back", "Go back" },
     { "set", "Set a header to be used in subsequent requests" },
     { "help", "Display help" },
@@ -277,6 +278,11 @@ char **empty_completion(char *text, int start, int end) {
     if ([arguments count] <= 1) return nil;
     NSString *body = [arguments objectAtIndex:1];
     return [self.browser post:rel body:body];
+}
+
+- (NSString *)command_delete:(NSArray *)arguments {
+    NSString *rel = [arguments firstObject];
+    return [self.browser delete:rel];
 }
 
 - (NSString *)command_set:(NSArray *)arguments {

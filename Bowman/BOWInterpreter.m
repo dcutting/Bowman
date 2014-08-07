@@ -45,7 +45,8 @@ typedef struct {
 
 COMMAND commands[] = {
     { "look", "Display the current resource" },
-    { "go", "Follow a link relation" },
+    { "get", "Follow a link relation" },
+    { "go", "Synonym for get" },
     { "post", "POST to a link relation" },
     { "back", "Go back" },
     { "set", "Set a header to be used in subsequent requests" },
@@ -239,6 +240,10 @@ char **empty_completion(char *text, int start, int end) {
 }
 
 - (NSString *)command_go:(NSArray *)arguments {
+    return [self command_get:arguments];
+}
+
+- (NSString *)command_get:(NSArray *)arguments {
     NSString *rel = [arguments firstObject];
     NSUInteger argumentIndex = 1;
     NSUInteger index = NSNotFound;
